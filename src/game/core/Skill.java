@@ -1,55 +1,42 @@
 package game.core;
 
-public class Skill {
+import java.io.Serializable;
+
+public class Skill implements Serializable {
+
     private String name;
-    private int power;
-    private int baseCooldown;
+    private Profession allowedProfession;
+    private int baseDamage;
+    private int cooldown;
     private int currentCooldown;
-    private SkillType type;
 
-    public enum SkillType {
-        NORMAL,
-        SKILL,
-        ULTIMATE
-    }
-
-    public Skill(String name, int power, int baseCooldown, SkillType type) {
+    public Skill(String name, Profession allowedProfession, int baseDamage, int cooldown) {
         this.name = name;
-        this.power = power;
-        this.baseCooldown = baseCooldown;
+        this.allowedProfession = allowedProfession;
+        this.baseDamage = baseDamage;
+        this.cooldown = cooldown;
         this.currentCooldown = 0;
-        this.type = type;
     }
 
-    public boolean isUsable() {
-        return currentCooldown == 0;
+    public boolean canUse(Player player) {
+        return player.getProfession() == allowedProfession && currentCooldown == 0;
     }
 
-    public void use(Stat userStats, Stat targetStats) {
-        if (!isUsable()) {
-            System.out.println(name + " is on cooldown for " + currentCooldown + " more turns!");
-            return;
+    public void use(Player player, Enemy enemy) {
+        if (canUse(player)) {
+            int damage = baseDamage + player.getStats().getStrength();
+            enemy.takeDamage(damage);
+            currentCooldown = Math.max(0, cooldown - player.getStats().getCooldownReduction());
         }
-
-        int damage = userStats.getDmg() + power;
-        System.out.println("Used " + name + "! It dealt " + damage + " damage.");
-        currentCooldown = Math.max(0, baseCooldown - userStats.getFlatCooldownReduction());
     }
 
-    public void reduceCooldown() {
-        if (currentCooldown > 0) currentCooldown--;
+    public void tickCooldown() {
+        if (currentCooldown > 0) {
+            currentCooldown--;
+        }
     }
 
-    // --- Getters ---
-    public String getName() { return name; }
-    public int getPower() { return power; }
-    public int getBaseCooldown() { return baseCooldown; }
-    public int getCurrentCooldown() { return currentCooldown; }
-    public SkillType getType() { return type; }
-
-    @Override
-    public String toString() {
-        return String.format("%s (Power: %d, Cooldown: %d, Type: %s)",
-                name, power, baseCooldown, type);
+    public String getName() {
+        return name;
     }
 }
