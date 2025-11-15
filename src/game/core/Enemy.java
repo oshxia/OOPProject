@@ -1,27 +1,30 @@
 package game.core;
 
-public class Enemy {
+import java.io.Serializable;
+
+public class Enemy implements Serializable {
+
     private String name;
     private Stat stats;
 
-    public Enemy(String name, int str, int agi, int intel) {
+    public Enemy(String name, Stat stats) {
         this.name = name;
-        this.stats = new Stat();
-        for (int i = 0; i < str - 5; i++) stats.increaseStr(1);
-        for (int i = 0; i < agi - 5; i++) stats.increaseAgi(1);
-        for (int i = 0; i < intel - 5; i++) stats.increaseInt(1);
+        this.stats = stats;
     }
 
-    public void attack(Player player) {
-        int damage = stats.getDmg();
-        System.out.println(name + " attacks " + player.getName() + " for " + damage + " damage!");
+    public void takeDamage(int damage) {
+        stats.takeDamage(damage);
     }
 
-    public String getName() { return name; }
-    public Stat getStats() { return stats; }
+    public boolean isDead() {
+        return stats.isDead(0);
+    }
 
-    @Override
-    public String toString() {
-        return String.format("Enemy{name='%s', stats=%s}", name, stats);
+    public String getName() {
+        return name;
+    }
+
+    public Stat getStats() {
+        return stats;
     }
 }
