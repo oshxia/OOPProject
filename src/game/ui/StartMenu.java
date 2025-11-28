@@ -1,52 +1,36 @@
 package game.ui;
 
-
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
+public class StartMenu {
 
-public class StartMenu extends StackPane {
-private final int width;
-private final int height;
+    private final Stage stage;
 
+    public StartMenu(Stage stage) {
+        this.stage = stage;
+    }
 
-public StartMenu(int width, int height) {
-this.width = width;
-this.height = height;
-build();
-}
+    public Scene createScene() {
 
+        // Background
+        ImageView bg = UIUtils.loadImageView("start_bg.png", 800, 600, false);
 
-private void build() {
-setPrefSize(width, height);
+        Button startBtn = new Button("Start Game");
+        startBtn.setOnAction(e -> SceneManager.showCharacterCreation());
 
+        VBox v = new VBox(20);
+        v.setAlignment(Pos.CENTER);
+        v.getChildren().addAll(new Text("Turn-Based RPG Demo"), startBtn);
 
-// Background
-ImageView bg = UIUtils.loadImageView("start_bg.png", width, height, true);
-if (bg != null) getChildren().add(bg);
+        StackPane root = new StackPane(bg, v);
 
-
-VBox menu = new VBox(20);
-menu.setAlignment(Pos.CENTER);
-
-
-ImageView logo = UIUtils.loadImageView("logo.png", 500, 120, true);
-if (logo != null) menu.getChildren().add(logo);
-
-
-Button play = new Button("Play");
-play.setPrefWidth(240);
-play.setOnAction(e -> SceneManager.showCharacterCreation());
-
-
-Button exit = new Button("Exit");
-exit.setPrefWidth(240);
-exit.setOnAction(e -> System.exit(0));
-
-
-menu.getChildren().addAll(play, exit);
-getChildren().add(menu);
-}
+        return new Scene(root, 800, 600);
+    }
 }
