@@ -2,21 +2,21 @@ package game.core;
 
 import java.io.Serializable;
 
+/**
+ * Stat represents primary and derived statistics.
+ * This class handles all stat calculations and HP management.
+ */
 public class Stat implements Serializable {
 
     // ===== BALANCED STAT CONSTANTS =====
     private static final int BASE_HP = 60;
-    private static final int HP_PER_STRENGTH = 3;  // balanced for +60â€“100 STR builds
+    private static final int HP_PER_STRENGTH = 3;
 
-    // Evasion & accuracy now use diminishing returns to prevent broken scaling
     private static final double EVASION_SCALER = 1.8;
     private static final double ACCURACY_SCALER = 2.2;
     private static final int BASE_ACCURACY = 75;
 
-    // CDR safely scales with sqrt so it can't break cooldowns
     private static final double CDR_SCALER = 0.5;
-
-    // Speed impacts turn order, Etheria-like feeling
     private static final double SPEED_SCALER = 1.5;
 
     private int strength;
@@ -39,25 +39,19 @@ public class Stat implements Serializable {
         this.hp = maxHp;
     }
 
-    // ===== NEW BALANCED FORMULAS =====
+    // ===== DERIVED STAT CALCULATION =====
     private void calculateDerivedStats() {
         this.maxHp = BASE_HP + strength * HP_PER_STRENGTH;
-
-        // Diminishing returns â€” no infinite dodge builds
         this.evasion = (int)(Math.sqrt(agility) * EVASION_SCALER);
-
-        // Accuracy soft cap â€” INT matters but does not hit 150%
         this.accuracy = BASE_ACCURACY + (int)(Math.sqrt(intelligence) * ACCURACY_SCALER);
 
-     // Cooldown reduction uses sqrt scaling â€” cannot break cooldowns
-     // Base INT (20) gives 0 CDR, only training INT increases CDR
-     int intelligenceAboveBase = Math.max(0, intelligence - 20);
-     this.cooldownReduction = (int)(Math.sqrt(intelligenceAboveBase) * CDR_SCALER);
+        int intelligenceAboveBase = Math.max(0, intelligence - 20);
+        this.cooldownReduction = (int)(Math.sqrt(intelligenceAboveBase) * CDR_SCALER);
 
-        // Faster turn order for AGI builds
         this.speed = (int)(Math.sqrt(agility) * SPEED_SCALER);
     }
 
+    // ===== STAT INCREASE METHODS =====
     public void increaseStrength(int amount) {
         if (amount == 0) return;
 
@@ -81,6 +75,7 @@ public class Stat implements Serializable {
         calculateDerivedStats();
     }
 
+    // ===== COMBAT METHODS =====
     public boolean isDead() {
         return hp <= 0;
     }
@@ -105,4 +100,10 @@ public class Stat implements Serializable {
     public int getAccuracy() { return accuracy; }
     public int getCooldownReduction() { return cooldownReduction; }
     public int getSpeed() { return speed; }
+
+    @Override
+    public String toString() {
+        return "Stat{STR=" + strength + ", AGI=" + agility + ", INT=" + intelligence + 
+               ", HP=" + hp + "/" + maxHp + "}";
+    }
 }
