@@ -5,6 +5,7 @@ import game.core.Enemy;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -21,74 +22,52 @@ public class BattleScreen {
     }
 
     public Scene createScene() {
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-
         // Background
         ImageView bg = UIUtils.loadImageView("battle_bg.png", 800, 600, false);
 
-        // Placeholder images
-        ImageView playerImg = UIUtils.loadImageView("char_create_bg.png", 150, 150, true);
-        ImageView enemyImg = UIUtils.loadImageView("char_create_bg.png", 150, 150, true);
-
-        HBox images = new HBox(50, playerImg, enemyImg);
-        images.setAlignment(Pos.CENTER);
-
-=======
-        ImageView bg = UIUtils.loadImageView("battle_bg.png", 800, 600, false);
-
         // Player image
-        ImageView playerImg = UIUtils.loadImageView("player_" + player.getProfession().name().toLowerCase() + "_battle.png", 150, 150, true);
+        ImageView playerImg = UIUtils.loadImageView(
+                "player_" + player.getProfession().name().toLowerCase() + "_battle.png",
+                150, 150, true
+        );
 
-=======
-        ImageView bg = UIUtils.loadImageView("battle_bg.png", 800, 600, false);
-
-        // Player image
-        ImageView playerImg = UIUtils.loadImageView("player_" + player.getProfession().name().toLowerCase() + "_battle.png", 150, 150, true);
-
->>>>>>> Stashed changes
         // Enemy image
-        ImageView enemyImg = UIUtils.loadImageView("enemy_" + enemy.getName().toLowerCase() + ".png", 150, 150, true);
+        ImageView enemyImg = UIUtils.loadImageView(
+                "enemy_" + enemy.getName().toLowerCase() + ".png",
+                150, 150, true
+        );
 
         HBox characters = new HBox(50, playerImg, enemyImg);
         characters.setAlignment(Pos.CENTER);
 
         // Stats display
-        Label playerStats = new Label("Player: " + player.getName() +
-                " | STR:" + player.getStats().getStrength() +
-                " | AGI:" + player.getStats().getAgility() +
-                " | INT:" + player.getStats().getIntelligence() +
-                " | HP:" + player.getStats().getHp());
+        Label playerStats = new Label(
+                "Player: " + player.getName() +
+                        " | STR:" + player.getStats().getStrength() +
+                        " | AGI:" + player.getStats().getAgility() +
+                        " | INT:" + player.getStats().getIntelligence() +
+                        " | HP:" + player.getStats().getHp()
+        );
 
-        Label enemyStats = new Label("Enemy: " + enemy.getName() +
-                " | STR:" + enemy.getStats().getStrength() +
-                " | AGI:" + enemy.getStats().getAgility() +
-                " | INT:" + enemy.getStats().getIntelligence() +
-                " | HP:" + enemy.getStats().getHp());
+        Label enemyStats = new Label(
+                "Enemy: " + enemy.getName() +
+                        " | STR:" + enemy.getStats().getStrength() +
+                        " | AGI:" + enemy.getStats().getAgility() +
+                        " | INT:" + enemy.getStats().getIntelligence() +
+                        " | HP:" + enemy.getStats().getHp()
+        );
 
         VBox statsBox = new VBox(10, playerStats, enemyStats);
         statsBox.setAlignment(Pos.CENTER);
 
-        // Back to menu
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+        // Back button
         Button backBtn = new Button("Back to Menu");
         backBtn.setOnAction(e -> SceneManager.showStartMenu());
 
-        VBox v = new VBox(30, images, backBtn);
-        v.setAlignment(Pos.CENTER);
+        VBox layout = new VBox(30, characters, statsBox, backBtn);
+        layout.setAlignment(Pos.CENTER);
 
-<<<<<<< Updated upstream
-        StackPane root = new StackPane(bg, v);
-
-=======
         StackPane root = new StackPane(bg, layout);
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
         return new Scene(root, 800, 600);
     }
 }
