@@ -17,7 +17,7 @@ public class CharacterCreation extends StackPane {
 
     public CharacterCreation(int width, int height) {
         // Background
-        ImageView bg = UIUtils.loadImageView("char_create_bg.png", width, height, false);
+        ImageView bg = UIUtils.loadImageView("char_create_bg.jpg", width, height, false);
 
         VBox center = new VBox(20);
         center.setAlignment(Pos.TOP_CENTER);

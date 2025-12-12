@@ -31,7 +31,7 @@ public class BattleScreen {
 
     public Scene createScene() {
         // Background
-        ImageView bg = UIUtils.loadImageView("battle_bg.png", 800, 600, false);
+        ImageView bg = UIUtils.loadImageView("battle_bg.jpg", 800, 600, false);
 
         // Player image
         ImageView playerImg = UIUtils.loadImageView(

@@ -16,7 +16,7 @@ public class StartMenu {
 
     public Scene createScene() {
         // Background
-        ImageView bg = UIUtils.loadImageView("start_bg.png", 800, 600, false);
+        ImageView bg = UIUtils.loadImageView("start_bg.jpg", 800, 600, false);
 
         // Title
         Text title = new Text("⚔️ Turn-Based RPG Demo ⚔️");

@@ -41,7 +41,8 @@ public class TrainingScreen {
     public Scene createScene() {
         StackPane root = new StackPane();
 
-        ImageView bg = UIUtils.loadImageView("battle_bg.png", 800, 600, false);
+        // Background
+        ImageView bg = UIUtils.loadImageView("battle_bg.jpg", 800, 600, false);
 
         VBox mainLayout = new VBox(20);
         mainLayout.setAlignment(Pos.TOP_CENTER);
@@ -62,13 +63,12 @@ public class TrainingScreen {
         // Enemy images
         HBox enemyImagesBox = new HBox(25);
         enemyImagesBox.setAlignment(Pos.CENTER);
-
         for (Enemy e : enemies) {
-            ImageView img = UIUtils.loadImageView(
-                    "enemy_" + e.getName().toLowerCase() + ".png", // keep spaces for Killer Rabbit
-                    130, 130, true
-            );
+            String fileName = e.getName().equalsIgnoreCase("Killer Rabbit") 
+                    ? "enemy_killer rabbit.png"
+                    : "enemy_" + e.getName().toLowerCase() + ".png";
 
+            ImageView img = UIUtils.loadImageView(fileName, 130, 130, true);
             VBox container = new VBox(8, img, createStyledLabel(e.getName(), 16, Color.WHITE));
             container.setAlignment(Pos.CENTER);
             enemyImagesBox.getChildren().add(container);
@@ -78,10 +78,9 @@ public class TrainingScreen {
         imagesBox.setAlignment(Pos.CENTER);
 
         // Stats Displays
-        playerStatsLabel = createStatsLabel(Color.LIGHTGREEN);
+        playerStatsLabel = createStatsLabel(Color.LIGHTGREEN, "PLAYER STATS");
         enemyStatsBox = new VBox(8);
         enemyStatsBox.setPadding(new Insets(12));
-        enemyStatsBox.setBackground(new Background(new BackgroundFill(Color.rgb(0,0,0,0.55), new CornerRadii(6), Insets.EMPTY)));
 
         updateStatsDisplay();
 
@@ -97,10 +96,11 @@ public class TrainingScreen {
         HBox trainButtons = new HBox(15, trainStrBtn, trainAgiBtn, trainIntBtn);
         trainButtons.setAlignment(Pos.CENTER);
 
-        // Next cycle button
+        // Next cycle button below training buttons
         nextBtn = new Button("Next Cycle");
         nextBtn.setDisable(true);
         nextBtn.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-background-color: gold; -fx-text-fill: black;");
+
         nextBtn.setOnAction(e -> {
             currentCycle++;
             if (currentCycle < totalCycles) {
@@ -134,12 +134,15 @@ public class TrainingScreen {
         return b;
     }
 
-    private Label createStatsLabel(Color color) {
+    private Label createStatsLabel(Color color, String header) {
         Label l = new Label();
         l.setFont(Font.font("Consolas", FontWeight.BOLD, 16));
         l.setTextFill(color);
+        l.setText(header);
         l.setBackground(new Background(new BackgroundFill(Color.rgb(0,0,0,0.55), new CornerRadii(6), Insets.EMPTY)));
         l.setPadding(new Insets(10));
+        l.setWrapText(true);   // ✅ Enable multi-line display
+        l.setMaxWidth(400);    // ✅ Limit width to fit layout
         return l;
     }
 
@@ -156,6 +159,16 @@ public class TrainingScreen {
             case "STR" -> player.getStats().increaseStrength(5);
             case "AGI" -> player.getStats().increaseAgility(5);
             case "INT" -> player.getStats().increaseIntelligence(5);
+        }
+
+        // Enemy training
+        for (Enemy enemy : enemies) {
+            Stat es = enemy.getStats();
+            switch (enemy.getName()) {
+                case "Minotaur" -> es.increaseStrength(5);
+                case "Killer Rabbit" -> es.increaseAgility(5);
+                case "Mindflayer" -> es.increaseIntelligence(5);
+            }
         }
 
         updateStatsDisplay();
@@ -197,6 +210,8 @@ public class TrainingScreen {
             );
             stats.setFont(Font.font("Consolas", FontWeight.BOLD, 14));
             stats.setTextFill(Color.WHITE);
+            stats.setWrapText(true);
+            stats.setMaxWidth(300);
 
             card.getChildren().addAll(name, stats);
             enemyStatsBox.getChildren().add(card);
