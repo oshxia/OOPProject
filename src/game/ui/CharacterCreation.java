@@ -12,6 +12,9 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import java.util.List;
+import game.core.Enemy;
+
 
 public class CharacterCreation extends StackPane {
 
@@ -66,8 +69,19 @@ public class CharacterCreation extends StackPane {
             String name = nameField.getText().trim();
             if (name.isEmpty()) name = "Hero";
             Player player = new Player(name, selected[0], new Stat(5, 5, 5));
+
+            // Initialize enemies for the training session
+            List<Enemy> enemies = List.of(
+                new Enemy("Minotaur", new Stat(20, 20, 30)),
+                new Enemy("Killer Rabbit", new Stat(25, 25, 20)),
+                new Enemy("Mindflayer", new Stat(15, 30, 20))
+            );
+            GameSession.init(enemies);
+
+            // Show training screen
             SceneManager.showTrainingScreen(player);
         });
+
 
         center.getChildren().addAll(title, charDisplay, profButtons, nameBox, startBtn);
         getChildren().addAll(bg, center);

@@ -21,11 +21,17 @@ public class StartMenu {
         // Title
         Text title = new Text("⚔️ The Threefold Trial ⚔️");
         title.setFont(Font.font("Verdana", FontWeight.BOLD, 36));
-        title.setStyle("-fx-fill: linear-gradient(to right, #FFD700, #FF4500); -fx-effect: dropshadow(gaussian, black, 5, 0.5, 2, 2);");
+        title.setStyle(
+                "-fx-fill: linear-gradient(to right, #FFD700, #FF4500);" +
+                " -fx-effect: dropshadow(gaussian, black, 5, 0.5, 2, 2);"
+        );
 
         // Start button
         Button startBtn = createButton("Start Adventure");
-        startBtn.setOnAction(e -> SceneManager.showCharacterCreation());
+        startBtn.setOnAction(e -> {
+            // Simply go to Character Creation
+            SceneManager.showCharacterCreation();
+        });
 
         VBox vbox = new VBox(25, title, startBtn);
         vbox.setAlignment(Pos.CENTER);

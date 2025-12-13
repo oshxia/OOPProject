@@ -67,11 +67,13 @@ public class BattleScreen {
 
         Button continueBtn = new Button("Continue");
         continueBtn.setStyle("-fx-font-weight:bold; -fx-background-color:#3b2f2f; -fx-text-fill:#d4af37;");
-        continueBtn.setOnAction(e -> afterBattleCallback.accept(playerWon));
+        continueBtn.setOnAction(e -> {
+            if (afterBattleCallback != null) afterBattleCallback.accept(playerWon);
+        });
 
         VBox layout = new VBox(20, characters, statsBox, result, continueBtn);
         layout.setAlignment(Pos.CENTER);
-        layout.setPadding(new Insets(20));
+        layout.setPadding(new Insets(15));
 
         root.getChildren().addAll(bg, layout);
         return new Scene(root, 800, 600);
