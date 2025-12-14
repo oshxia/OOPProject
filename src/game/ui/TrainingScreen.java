@@ -16,15 +16,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
-import java.util.*;
+import java.util.Random;
 
 public class TrainingScreen {
 
     private final Player player;
-    private final List<Enemy> allEnemies;
-    private final Queue<Enemy> remainingEnemies;
-
-    private int currentCycle = 1;
+    private Enemy currentEnemy;
+    private int currentCycle;
     private int totalCycles;
 
     private Label cycleLabel;
@@ -36,14 +34,8 @@ public class TrainingScreen {
     public TrainingScreen(Player player) {
         this.player = player;
 
-        allEnemies = new ArrayList<>();
-        allEnemies.add(new Enemy("Minotaur", new Stat(20, 20, 30)));
-        allEnemies.add(new Enemy("Killer Rabbit", new Stat(25, 25, 20)));
-        allEnemies.add(new Enemy("Mindflayer", new Stat(15, 30, 20)));
-
-        Collections.shuffle(allEnemies);
-        remainingEnemies = new ArrayDeque<>(allEnemies);
-
+        // Get the next enemy from GameSession
+        currentEnemy = GameSession.nextEnemy();
         randomizeCycles();
     }
 
@@ -55,7 +47,6 @@ public class TrainingScreen {
     public Scene createScene() {
         StackPane root = new StackPane();
 
-        // Fixed size 800x600
         ImageView bg = UIUtils.loadImageView("training_bg.jpg", 800, 600, false);
 
         VBox main = new VBox(15);
@@ -104,10 +95,18 @@ public class TrainingScreen {
     }
 
     private void train(String stat) {
+        // Increase player's stat
         switch (stat) {
             case "STR" -> player.getStats().increaseStrength(5);
             case "AGI" -> player.getStats().increaseAgility(5);
             case "INT" -> player.getStats().increaseIntelligence(5);
+        }
+
+        // Optional: increase enemy stat in response (example)
+        switch (stat) {
+            case "STR" -> currentEnemy.getStats().increaseStrength(3);
+            case "AGI" -> currentEnemy.getStats().increaseAgility(3);
+            case "INT" -> currentEnemy.getStats().increaseIntelligence(3);
         }
 
         updateStatsDisplay();
@@ -120,19 +119,18 @@ public class TrainingScreen {
             currentCycle++;
             enableTraining();
         } else {
-            Enemy enemy = remainingEnemies.poll();
-            if (enemy != null) {
-                SceneManager.showBattleScreen(player, enemy, won -> {
-                    // After battle callback
-                    if (!GameSession.hasMoreEnemies()) {
-                        SceneManager.showEndScreen(won, player);
-                    } else {
-                        randomizeCycles();
-                        remainingEnemies.add(enemy); // optional: reshuffle if needed
-                        SceneManager.showTrainingScreen(player);
-                    }
-                });
-            }
+            // End of training for current enemy → battle
+            SceneManager.showBattleScreen(player, currentEnemy, won -> {
+                if (!won || !GameSession.hasMoreEnemies()) {
+                    // Player lost OR no more enemies → end game
+                    SceneManager.showEndScreen(won, player);
+                } else {
+                    // Continue to next enemy
+                    currentEnemy = GameSession.nextEnemy();
+                    randomizeCycles();
+                    SceneManager.showTrainingScreen(player);
+                }
+            });
         }
     }
 
@@ -155,38 +153,38 @@ public class TrainingScreen {
         Stat s = player.getStats();
         playerStatsLabel.setText(
                 "PLAYER STATUS\n" +
-                        "STR: " + s.getStrength() + " | AGI: " + s.getAgility() + " | INT: " + s.getIntelligence() + "\n" +
-                        "HP: " + s.getHp() + " | SPD: " + s.getSpeed() + " | ACC: " + s.getAccuracy() + " | EVA: " + s.getEvasion()
+                        "STR: " + s.getStrength() + " | AGI: " + s.getAgility() + " | INT: " + s.getIntelligence() +
+                        "\nHP: " + s.getHp() + " | SPD: " + s.getSpeed() + " | ACC: " + s.getAccuracy() + " | EVA: " + s.getEvasion()
         );
 
+        // Clear previous enemy display
         enemyStatsBox.getChildren().clear();
-        for (Enemy e : remainingEnemies) {
-            VBox card = new VBox(4);
-            card.setPadding(new Insets(8));
-            card.setBackground(new Background(new BackgroundFill(Color.rgb(30, 30, 30, 0.8), new CornerRadii(6), Insets.EMPTY)));
 
-            ImageView img = UIUtils.loadImageView(
-                    "enemy_" + e.getName().toLowerCase().replace(" ", "") + ".png", 100, 100, true
-            );
+        VBox card = new VBox(4);
+        card.setPadding(new Insets(8));
+        card.setBackground(new Background(new BackgroundFill(Color.rgb(30, 30, 30, 0.8), new CornerRadii(6), Insets.EMPTY)));
 
-            Label name = new Label(e.getName());
-            name.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
-            name.setTextFill(Color.web("#ff6f61"));
+        ImageView img = UIUtils.loadImageView(
+                "enemy_" + currentEnemy.getName().toLowerCase().replace(" ", "") + ".png", 100, 100, true
+        );
 
-            Stat es = e.getStats();
-            Label stats = new Label(
-                    "STR: " + es.getStrength() +
-                            " | AGI: " + es.getAgility() +
-                            " | INT: " + es.getIntelligence() +
-                            " | HP: " + es.getHp()
-            );
-            stats.setFont(Font.font("Consolas", FontWeight.BOLD, 12));
-            stats.setTextFill(Color.LIGHTGRAY);
+        Label name = new Label(currentEnemy.getName());
+        name.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
+        name.setTextFill(Color.web("#ff6f61"));
 
-            card.getChildren().addAll(img, name, stats);
-            card.setAlignment(Pos.CENTER);
-            enemyStatsBox.getChildren().add(card);
-        }
+        Stat es = currentEnemy.getStats();
+        Label stats = new Label(
+                "STR: " + es.getStrength() +
+                        " | AGI: " + es.getAgility() +
+                        " | INT: " + es.getIntelligence() +
+                        " | HP: " + es.getHp()
+        );
+        stats.setFont(Font.font("Consolas", FontWeight.BOLD, 12));
+        stats.setTextFill(Color.LIGHTGRAY);
+
+        card.getChildren().addAll(img, name, stats);
+        card.setAlignment(Pos.CENTER);
+        enemyStatsBox.getChildren().add(card);
     }
 
     private Label createStatsLabel(String header, Color color) {

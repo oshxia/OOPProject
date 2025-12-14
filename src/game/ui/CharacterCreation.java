@@ -14,7 +14,8 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import java.util.List;
 import game.core.Enemy;
-
+import javafx.scene.effect.DropShadow;
+import javafx.scene.paint.Color;
 
 public class CharacterCreation extends StackPane {
 
@@ -27,8 +28,9 @@ public class CharacterCreation extends StackPane {
 
         // Title
         Text title = new Text("🛡️ Character Creation 🛡️");
-        title.setFont(Font.font("Verdana", FontWeight.BOLD, 32));
-        title.setStyle("-fx-fill: linear-gradient(to right, #00FFFF, #1E90FF); -fx-effect: dropshadow(gaussian, black, 5, 0.5, 2, 2);");
+        title.setFont(Font.font("Consolas", FontWeight.BOLD, 32));
+        title.setFill(Color.web("#FFD700")); // gold-ish
+        title.setEffect(new DropShadow(5, Color.BLACK));
 
         // Character display
         ImageView charDisplay = UIUtils.loadImageView("player_warrior_battle.png", 150, 150, true);
@@ -59,7 +61,8 @@ public class CharacterCreation extends StackPane {
         HBox nameBox = new HBox(10);
         nameBox.setAlignment(Pos.CENTER);
         Label nameLabel = new Label("Name:");
-        nameLabel.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+        nameLabel.setFont(Font.font("Consolas", FontWeight.BOLD, 16));
+        nameLabel.setTextFill(Color.LIGHTGRAY);
         TextField nameField = new TextField("Hero");
         nameBox.getChildren().addAll(nameLabel, nameField);
 
@@ -82,7 +85,6 @@ public class CharacterCreation extends StackPane {
             SceneManager.showTrainingScreen(player);
         });
 
-
         center.getChildren().addAll(title, charDisplay, profButtons, nameBox, startBtn);
         getChildren().addAll(bg, center);
     }
@@ -90,26 +92,26 @@ public class CharacterCreation extends StackPane {
     private Button createButton(String text) {
         Button btn = new Button(text);
         btn.setStyle(
+                "-fx-background-color: #3b2f2f; " + // dark panel
+                "-fx-text-fill: #d4af37; " +         // gold text
                 "-fx-font-size: 16px; " +
                 "-fx-font-weight: bold; " +
-                "-fx-background-color: linear-gradient(to bottom, #00FF7F, #32CD32); " +
-                "-fx-text-fill: black; " +
                 "-fx-background-radius: 10; " +
                 "-fx-padding: 8 20;"
         );
         btn.setOnMouseEntered(e -> btn.setStyle(
+                "-fx-background-color: #5a4a4a; " + // slightly lighter on hover
+                "-fx-text-fill: #ffd700; " +
                 "-fx-font-size: 16px; " +
                 "-fx-font-weight: bold; " +
-                "-fx-background-color: linear-gradient(to bottom, #00FF99, #3CB371); " +
-                "-fx-text-fill: black; " +
                 "-fx-background-radius: 10; " +
                 "-fx-padding: 8 20;"
         ));
         btn.setOnMouseExited(e -> btn.setStyle(
+                "-fx-background-color: #3b2f2f; " +
+                "-fx-text-fill: #d4af37; " +
                 "-fx-font-size: 16px; " +
                 "-fx-font-weight: bold; " +
-                "-fx-background-color: linear-gradient(to bottom, #00FF7F, #32CD32); " +
-                "-fx-text-fill: black; " +
                 "-fx-background-radius: 10; " +
                 "-fx-padding: 8 20;"
         ));

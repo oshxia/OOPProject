@@ -2,7 +2,6 @@ package game.ui;
 
 import game.core.Player;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -10,6 +9,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.paint.Color;
 
 public class EndScreen extends StackPane {
 
@@ -21,8 +22,9 @@ public class EndScreen extends StackPane {
 
         // Result text
         Text result = new Text(playerWon ? "🎉 Victory!" : "💀 Defeat!");
-        result.setFont(Font.font("Verdana", FontWeight.BOLD, 36));
-        result.setStyle("-fx-fill: gold; -fx-effect: dropshadow(gaussian, black, 5, 0.5, 2, 2);");
+        result.setFont(Font.font("Consolas", FontWeight.BOLD, 36));
+        result.setFill(Color.GOLD);
+        result.setEffect(new DropShadow(5, Color.BLACK));
 
         // Player stats summary
         Text stats = new Text(
@@ -32,8 +34,8 @@ public class EndScreen extends StackPane {
                 " | INT: " + player.getStats().getIntelligence() +
                 " | HP: " + player.getStats().getHp()
         );
-        stats.setFont(Font.font("Arial", FontWeight.BOLD, 18));
-        stats.setStyle("-fx-fill: white;");
+        stats.setFont(Font.font("Consolas", FontWeight.BOLD, 18));
+        stats.setFill(Color.LIGHTGRAY);
 
         // Back to menu button
         Button menuBtn = new Button("Back to Menu");

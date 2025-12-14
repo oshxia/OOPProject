@@ -18,7 +18,7 @@ public class GameSession {
 
     /**
      * Returns the next enemy.
-     * Returns null AFTER the 3rd battle.
+     * Returns null AFTER all enemies are fought
      */
     public static Enemy nextEnemy() {
         if (enemies == null || enemies.isEmpty()) {
@@ -39,5 +39,14 @@ public class GameSession {
      */
     public static int battlesLeft() {
         return enemies == null ? 0 : enemies.size();
+    }
+
+    /**
+     * Returns a shuffled copy of remaining enemies
+     * Used by TrainingScreen to display and update stats
+     */
+    public static List<Enemy> getEnemies() {
+        if (enemies == null) return Collections.emptyList();
+        return new ArrayList<>(enemies);
     }
 }
