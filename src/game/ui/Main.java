@@ -10,8 +10,12 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-        SceneManager.init(stage, WIDTH, HEIGHT); // store stage
-        SceneManager.showStartMenu();            // no need to pass stage
+        // Initialize SceneManager with stage & size
+        SceneManager.init(stage, WIDTH, HEIGHT);
+
+        // Show start menu
+        SceneManager.showStartMenu();
+
         stage.setTitle("Turn-Based RPG - Demo");
         stage.show();
     }
