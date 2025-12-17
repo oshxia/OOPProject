@@ -1,8 +1,7 @@
 package game.ui;
 
-import game.core.Player;
-import game.core.Enemy;
-import game.core.Stat;
+import game.core.*;
+import game.system.CombatSystem;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -33,8 +32,6 @@ public class TrainingScreen {
 
     public TrainingScreen(Player player) {
         this.player = player;
-
-        // Get the next enemy from GameSession
         currentEnemy = GameSession.nextEnemy();
         randomizeCycles();
     }
@@ -46,7 +43,6 @@ public class TrainingScreen {
 
     public Scene createScene() {
         StackPane root = new StackPane();
-
         ImageView bg = UIUtils.loadImageView("training_bg.jpg", 800, 600, false);
 
         VBox main = new VBox(15);
@@ -95,14 +91,13 @@ public class TrainingScreen {
     }
 
     private void train(String stat) {
-        // Increase player's stat
         switch (stat) {
             case "STR" -> player.getStats().increaseStrength(5);
             case "AGI" -> player.getStats().increaseAgility(5);
             case "INT" -> player.getStats().increaseIntelligence(5);
         }
 
-        // Optional: increase enemy stat in response (example)
+        // Example enemy response
         switch (stat) {
             case "STR" -> currentEnemy.getStats().increaseStrength(3);
             case "AGI" -> currentEnemy.getStats().increaseAgility(3);
@@ -119,13 +114,13 @@ public class TrainingScreen {
             currentCycle++;
             enableTraining();
         } else {
-            // End of training for current enemy → battle
-            SceneManager.showBattleScreen(player, currentEnemy, won -> {
+        	CombatSystem combatSystem = GameSession.getCombatSystem();
+
+
+            SceneManager.showBattleScreen(player, currentEnemy, combatSystem, won -> {
                 if (!won || !GameSession.hasMoreEnemies()) {
-                    // Player lost OR no more enemies → end game
                     SceneManager.showEndScreen(won, player);
                 } else {
-                    // Continue to next enemy
                     currentEnemy = GameSession.nextEnemy();
                     randomizeCycles();
                     SceneManager.showTrainingScreen(player);
@@ -153,11 +148,10 @@ public class TrainingScreen {
         Stat s = player.getStats();
         playerStatsLabel.setText(
                 "PLAYER STATUS\n" +
-                        "STR: " + s.getStrength() + " | AGI: " + s.getAgility() + " | INT: " + s.getIntelligence() +
-                        "\nHP: " + s.getHp() + " | SPD: " + s.getSpeed() + " | ACC: " + s.getAccuracy() + " | EVA: " + s.getEvasion()
+                "STR: " + s.getStrength() + " | AGI: " + s.getAgility() + " | INT: " + s.getIntelligence() +
+                "\nHP: " + s.getHp() + " | SPD: " + s.getSpeed() + " | ACC: " + s.getAccuracy() + " | EVA: " + s.getEvasion()
         );
 
-        // Clear previous enemy display
         enemyStatsBox.getChildren().clear();
 
         VBox card = new VBox(4);
@@ -175,9 +169,9 @@ public class TrainingScreen {
         Stat es = currentEnemy.getStats();
         Label stats = new Label(
                 "STR: " + es.getStrength() +
-                        " | AGI: " + es.getAgility() +
-                        " | INT: " + es.getIntelligence() +
-                        " | HP: " + es.getHp()
+                " | AGI: " + es.getAgility() +
+                " | INT: " + es.getIntelligence() +
+                " | HP: " + es.getHp()
         );
         stats.setFont(Font.font("Consolas", FontWeight.BOLD, 12));
         stats.setTextFill(Color.LIGHTGRAY);

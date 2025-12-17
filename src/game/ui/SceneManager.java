@@ -2,6 +2,7 @@ package game.ui;
 
 import game.core.Player;
 import game.core.Enemy;
+import game.system.CombatSystem;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -19,42 +20,30 @@ public class SceneManager {
         height = h;
     }
 
-    // START MENU
     public static void showStartMenu() {
         StartMenu menu = new StartMenu();
         stage.setScene(menu.createScene());
         stage.show();
     }
 
-    // CHARACTER CREATION
     public static void showCharacterCreation() {
         CharacterCreation cc = new CharacterCreation(width, height);
         stage.setScene(new Scene(cc, width, height));
         stage.show();
     }
 
-    // TRAINING SCREEN
     public static void showTrainingScreen(Player player) {
         TrainingScreen ts = new TrainingScreen(player);
         stage.setScene(ts.createScene());
         stage.show();
     }
 
-    // BATTLE SCREEN
-    public static void showBattleScreen(Player player, Enemy enemy) {
-        BattleScreen bs = new BattleScreen(player, enemy, null);
-        stage.setScene(bs.createScene());
+    public static void showBattleScreen(Player player, Enemy enemy, CombatSystem combatSystem, Consumer<Boolean> afterBattle) {
+        BattleScreen battleScreen = new BattleScreen(player, enemy, combatSystem, afterBattle);
+        stage.setScene(battleScreen.createScene());
         stage.show();
     }
 
-    // BATTLE SCREEN with callback
-    public static void showBattleScreen(Player player, Enemy enemy, Consumer<Boolean> afterBattle) {
-        BattleScreen bs = new BattleScreen(player, enemy, afterBattle);
-        stage.setScene(bs.createScene());
-        stage.show();
-    }
-
-    // END SCREEN
     public static void showEndScreen(boolean playerWon, Player player) {
         EndScreen es = new EndScreen(width, height, playerWon, player);
         stage.setScene(new Scene(es, width, height));

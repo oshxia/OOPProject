@@ -43,18 +43,29 @@ public class CharacterCreation extends StackPane {
         Button bRog = createButton("Rogue");
         profButtons.getChildren().addAll(bWar, bMag, bRog);
 
+        // Description label
+        Label profDesc = new Label("Balanced fighter with consistent damage");
+        profDesc.setFont(Font.font("Consolas", FontWeight.NORMAL, 14));
+        profDesc.setTextFill(Color.LIGHTGRAY);
+        profDesc.setWrapText(true);
+        profDesc.setMaxWidth(400);
+        profDesc.setAlignment(Pos.CENTER);
+
         final Profession[] selected = {Profession.WARRIOR};
         bWar.setOnAction(e -> {
             selected[0] = Profession.WARRIOR;
             charDisplay.setImage(UIUtils.loadImageView("player_warrior_battle.png", 150, 150, true).getImage());
+            profDesc.setText("Balanced fighter with consistent damage");
         });
         bMag.setOnAction(e -> {
             selected[0] = Profession.MAGE;
             charDisplay.setImage(UIUtils.loadImageView("player_mage_battle.png", 150, 150, true).getImage());
+            profDesc.setText("Powerful spellcaster with high burst damage");
         });
         bRog.setOnAction(e -> {
             selected[0] = Profession.ROGUE;
             charDisplay.setImage(UIUtils.loadImageView("player_rogue_battle.png", 150, 150, true).getImage());
+            profDesc.setText("Swift assassin with fast attacks");
         });
 
         // Name input
@@ -79,13 +90,13 @@ public class CharacterCreation extends StackPane {
                 new Enemy("Killer Rabbit", new Stat(25, 25, 20)),
                 new Enemy("Mindflayer", new Stat(15, 30, 20))
             );
-            GameSession.init(enemies);
+            GameSession.init(player, enemies);
 
             // Show training screen
             SceneManager.showTrainingScreen(player);
         });
 
-        center.getChildren().addAll(title, charDisplay, profButtons, nameBox, startBtn);
+        center.getChildren().addAll(title, charDisplay, profButtons, profDesc, nameBox, startBtn);
         getChildren().addAll(bg, center);
     }
 
@@ -100,7 +111,7 @@ public class CharacterCreation extends StackPane {
                 "-fx-padding: 8 20;"
         );
         btn.setOnMouseEntered(e -> btn.setStyle(
-                "-fx-background-color: #5a4a4a; " + // slightly lighter on hover
+                "-fx-background-color: #5a4a4a; " +
                 "-fx-text-fill: #ffd700; " +
                 "-fx-font-size: 16px; " +
                 "-fx-font-weight: bold; " +
